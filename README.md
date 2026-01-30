@@ -19,23 +19,33 @@ Navbar display in all page and it’s uses as main navigation website. Created a
 - tab product in right up corner direct to list product page.
     `/products` → 🛍️ Product List
 
--	Product Listing Page (Client Side Rendering- CSR)
+# 🛒🛒 Product Listing Page (Client Side Rendering- CSR) 🛒🛒
 Display all product in grid card that contain :
-a.	Product picture 
-b.	Product name 
-c.	Product price 
+a.	🖼️📸Product picture 🖼️📸
+b.	🏷️ Product name 🏷️
+c.	💰Product price 💰
 It’s use Client Side Rendering (CSR) (“useState”, “useEffect”) , the date take from FakeStoreAPI , product display with dynamic 
--	Product Detail Page (Server Side Rendering -SSR)
+
+# 🧩🧩Product Detail Page (Server Side Rendering -SSR)🧩🧩
 It’s display complete details from product that choose by user. The details product information like product name, product picture , product description, price product, etc. It’s uses dynamic routing (/products/[id]) , its uses server side rendering (SSR), fetch data in server every request, uses parameter URL (params.id). params.id uses to take specific product data that choose by user. When user click one of product in list page, URL will change to be like /products/3, The number 3 here is ID product and then Next.js automatically read URL part and save it as parameter(params.id). Here’s a little picture about params work cycle : 
 
 a.	page.tsx (app/products/[id]/page.tsx) get params.id then fetch to the /api/products/ex.(5)  useEffect(() => {fetch(`https://fakestoreapi.com/products/${id}`)
 b.	route.ts get params.id (app/api/products/[id]/route.tsx) get params.id 
-c.	API fetch to the FakeStoreAPI
+c.	📡📡 API fetch to the FakeStoreAPI 📡📡
 d.	Route.tsx return JSON response
 e.	The data will sent to page.tsx 
 f.	UI finally displayed 
 
--	Dynamic Routing & Client-side Navigation 
+# 🔀🔀 Dynamic Routing & Client-side Navigation 🧭🧭
 Navigation between pages do without page reload. It uses file-based routing Next.js , uses next/link (app/products/[id]/page.tsx) , [id] Folder itself show as dynamic routing. In page.tsx especially on (const product = await getProduct(params.id) , params.id automatically filled by Next.js , the value comes from URL
--	Responsive Layout & Basic Styling 
+
+# 🎨🎨 Responsive Layout & Basic Styling 🎨🎨
 This website want to provide a responsive layout  to users according to the device that used (laptop, tablet or handphone) , make it’s feels look comfortable in any device. Product card display using layout grid. 
+
+## ▶️ How to Run
+
+1️⃣ 🖥️ Install dependencies 🖥️  
+2️⃣ 🏗️Run development server  🏗️
+3️⃣ 🌍 Open in browser 🌍
+
+# by 🙋‍♀️ : Zahratunnisa (ReVou Assigment 2026)
