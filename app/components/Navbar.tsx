@@ -14,6 +14,10 @@ export default function Navbar() {
         <Link href="#" className="hover:text-slate-300">
           Cart
         </Link>
+
+         <Link href="/faq" className="hover:underline">
+          FAQ
+        </Link>
       </div>
     </nav>
   );

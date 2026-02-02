@@ -3,14 +3,31 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+  images: string[];
+};
+
 export default function ProductsPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://fakestoreapi.com/products')
-      .then(res => res.json())
-      .then(data => setProducts(data));
+    fetch('https://api.escuelajs.co/api/v1/products')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch products');
+        return res.json();
+      })
+      .then(data => setProducts(data))
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) return <p className="p-8">Loading products...</p>;
+  if (error) return <p className="p-8 text-red-500">{error}</p>;
 
   return (
     <div className="max-w-6xl mx-auto p-8">
@@ -19,9 +36,9 @@ export default function ProductsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map(product => (
           <Link key={product.id} href={`/products/${product.id}`}>
-            <div className="border rounded-lg p-4 hover:shadow-lg transition">
+            <div className="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer">
               <img
-                src={product.image}
+                src={product.images?.[0]}
                 alt={product.title}
                 className="h-40 mx-auto object-contain"
               />
@@ -34,3 +51,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+

@@ -1,6 +1,14 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 
-const products = [
+type Product = {
+  id: string
+  title: string
+  price: number
+  description: string
+  image: string
+}
+
+const products: Product[] = [
   {
     id: '1',
     title: 'Tas Keren',
@@ -18,10 +26,12 @@ const products = [
 ]
 
 export async function GET(
-  _req: Request,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const product = products.find((p) => p.id === params.id)
+  const { id } = await context.params   // 🔥 INI KUNCI UTAMANYA
+
+  const product = products.find((p) => p.id === id)
 
   if (!product) {
     return NextResponse.json(
@@ -32,3 +42,4 @@ export async function GET(
 
   return NextResponse.json(product)
 }
+

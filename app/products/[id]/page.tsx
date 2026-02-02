@@ -1,56 +1,50 @@
-'use client'
+type Product = {
+  id: number
+  title: string
+  price: number
+  description: string
+  images: string[]
+}
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+type Props = {
+  params: Promise<{
+    id: string
+  }>
+}
 
-export default function ProductDetailPage() {
-  const params = useParams()
-  const id = params.id as string
+export default async function ProductDetailPage({ params }: Props) {
+  const { id } = await params   // ⬅️ WAJIB di Next.js terbaru
 
-  const [product, setProduct] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const res = await fetch(
+    `https://api.escuelajs.co/api/v1/products/${id}`,
+    { cache: 'no-store' }
+  )
 
-  useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setProduct(data)
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }, [id])
+  if (!res.ok) {
+    throw new Error('Failed to fetch product')
+  }
 
-  if (loading) return <p>Loading...</p>
-  if (!product) return <p>Product not found</p>
+  const product: Product = await res.json()
 
   return (
-    <div className="max-w-5xl mx-auto p-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="max-w-4xl mx-auto p-8 grid md:grid-cols-2 gap-8">
+      <img
+        src={product.images[0]}
+        alt={product.title}
+        className="w-full h-96 object-contain rounded"
+      />
 
-           {/* Gambar */}
-      <div className="flex justify-center">
-        <img
-          src={product.image}
-          alt={product.title}
-          className="w-72 object-contain"
-        />
-      </div>
-
-      {/* Info */}
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">{product.title}</h1>
-        <p className="text-gray-10000">{product.description}</p>
-        <p className="text-xl font-semibold text-green-500">
+      <div>
+        <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+        <p className="text-xl text-blue-600 font-semibold mb-4">
           ${product.price}
         </p>
-
-      <button className="mt-4 bg-slate-900 text-white px-6 py-3 rounded hover:bg-slate-700">
-          Add to Cart
-      </button>
+        <p className="text-white-700 leading-relaxed">
+          {product.description}
+        </p>
       </div>
-    </div>
     </div>
   )
 }
+
+
