@@ -1,59 +1,85 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
+/* ================= COOKIE HELPERS ================= */
+function setCookie(name: string, value: string) {
+  document.cookie = `${name}=${value}; path=/`;
+}
+
+function deleteCookie(name: string) {
+  document.cookie = `${name}=; Max-Age=0; path=/`;
+}
+
+/* ================= TYPES ================= */
 type User = {
-  id: number;
   email: string;
   name: string;
-  avatar: string;
 };
 
 type AuthContextType = {
   user: User | null;
-  token: string | null;
-  login: (user: User, token: string) => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
 };
 
+/* ================= CONTEXT ================= */
 const AuthContext = createContext<AuthContextType | null>(null);
 
+/* ================= PROVIDER ================= */
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
 
   // load dari localStorage saat refresh
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
-
-    if (storedUser && storedToken) {
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
-      setToken(storedToken);
     }
   }, []);
 
-  const login = (user: User, token: string) => {
-    setUser(user);
-    setToken(token);
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token);
-  };
+  /* ================= LOGIN ================= */
+  const login = (email: string, password: string) => {
+    if (email === "admin@mail.com" && password === "admin123"){
+      const loggedUser: User = {
+        email : "admin@mail.com",
+        name : "Admin",
+      };
 
+    setUser(loggedUser);
+    localStorage.setItem("user", JSON.stringify(loggedUser));
+    
+    // penting untuk middleware
+    setCookie("token", "loggedin");
+
+    router.push("/");
+  } else {
+    alert("Invalid credentials")
+  }
+};
+
+/* ================= LOGOUT ================= */
   const logout = () => {
     setUser(null);
-    setToken(null);
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  };
+
+// hapus cookie middleware
+    deleteCookie("token");
+
+    router.push("/login");
+};
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+/* ================= HOOK ================= */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used inside AuthProvider");

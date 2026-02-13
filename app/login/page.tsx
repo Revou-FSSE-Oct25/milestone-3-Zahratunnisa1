@@ -1,52 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/context/AuthContext";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "../components/context/AuthContext";
 
 export default function LoginPage() {
-  const router = useRouter();
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
+
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await fetch("https://api.escuelajs.co/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (!res.ok) throw new Error("Login gagal");
-
-      const data = await res.json();
-
-      // ambil profile user
-      const profileRes = await fetch(
-        "https://api.escuelajs.co/api/v1/auth/profile",
-        {
-          headers: {
-            Authorization: `Bearer ${data.access_token}`,
-          },
-        }
-      );
-
-      const userProfile = await profileRes.json();
-
-      login(userProfile, data.access_token);
-
-      router.push("/");
+      await login(email, password); // 🔥 serahkan ke context
+      router.push(redirect); // 🔥 redirect balik ke halaman tujuan
     } catch (err) {
       setError("Email atau password salah");
     }
@@ -85,3 +61,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

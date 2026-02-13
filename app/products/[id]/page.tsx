@@ -1,3 +1,5 @@
+import AddToCartButton from "app/components/AddToCartButton";
+
 type Product = {
   id: number
   title: string
@@ -42,6 +44,13 @@ export default async function ProductDetailPage({ params }: Props) {
         <p className="text-white-700 leading-relaxed">
           {product.description}
         </p>
+
+          <AddToCartButton
+              id={product.id}
+              title={product.title}
+              price={product.price}
+              image={product.images[0]}
+          />
       </div>
     </div>
   )
