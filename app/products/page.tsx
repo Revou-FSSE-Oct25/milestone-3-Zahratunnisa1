@@ -1,7 +1,6 @@
-'use client';
+import Link from "next/link";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+export const revalidate = 60; // ISR 60 detik
 
 type Product = {
   id: number;
@@ -10,24 +9,20 @@ type Product = {
   images: string[];
 };
 
-export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+async function getProducts(): Promise<Product[]> {
+  const res = await fetch("http://localhost:3000/api/products", {
+    next: { revalidate: 60 },
+  });
 
-  useEffect(() => {
-    fetch('https://api.escuelajs.co/api/v1/products')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch products');
-        return res.json();
-      })
-      .then(data => setProducts(data))
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
 
-  if (loading) return <p className="p-8">Loading products...</p>;
-  if (error) return <p className="p-8 text-red-500">{error}</p>;
+  return res.json();
+}
+
+export default async function ProductsPage() {
+  const products = await getProducts();
 
   return (
     <div className="max-w-6xl mx-auto p-8">
@@ -51,4 +46,5 @@ export default function ProductsPage() {
     </div>
   );
 }
+
 

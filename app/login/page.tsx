@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "../components/context/AuthContext";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
-  const { login } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,18 +12,22 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
 
-
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    try {
-      await login(email, password); // 🔥 serahkan ke context
-      router.push(redirect); // 🔥 redirect balik ke halaman tujuan
-    } catch (err) {
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false, // kita handle redirect sendiri
+    });
+
+    if (result?.error) {
       setError("Email atau password salah");
+      return;
     }
+
+    router.push(redirect);
   };
 
   return (
@@ -44,6 +46,7 @@ export default function LoginPage() {
           className="w-full border p-2 mb-3 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
 
         <input
@@ -52,6 +55,7 @@ export default function LoginPage() {
           className="w-full border p-2 mb-4 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         <button className="w-full bg-black text-white p-2 rounded">
@@ -61,4 +65,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
 

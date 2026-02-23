@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart } from "app/components/context/CartContext";
+import { useCart } from "context/CartContext";
 import Link from "next/link";
 
 export default function CartPage() {

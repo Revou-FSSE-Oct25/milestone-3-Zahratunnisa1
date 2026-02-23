@@ -1,4 +1,4 @@
-import AddToCartButton from "app/components/AddToCartButton";
+import AddToCartButton from "components/AddToCartButton";
 
 type Product = {
   id: number

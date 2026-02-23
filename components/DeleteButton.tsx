@@ -14,7 +14,7 @@ export default function DeleteButton({ id }: Props) {
     if (!confirmDelete) return;
 
     try {
-      await fetch(`/api/admin/products/${id}`, {
+      await fetch(`/api/products/${id}`, {
         method: "DELETE",
       });
 

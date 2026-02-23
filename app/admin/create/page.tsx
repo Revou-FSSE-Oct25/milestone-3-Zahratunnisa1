@@ -10,9 +10,34 @@ export default function CreateProductPage() {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ✅ VALIDATION START
+    if (!title.trim()) {
+      setError("Title is required");
+      return;
+    }
+
+    if (!price || Number(price) <= 0) {
+      setError("Price must be greater than 0");
+      return;
+    }
+
+    if (!image.trim()) {
+      setError("Image URL is required");
+      return;
+    }
+
+    if (!description.trim()) {
+      setError("Description is required");
+      return;
+    }
+    // ✅ VALIDATION END
+
+    setError("");
 
     const res = await fetch("/api/admin/products", {
       method: "POST",
@@ -43,6 +68,7 @@ export default function CreateProductPage() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
+          type="text"
           placeholder="Product title"
           className="border p-2 rounded"
           value={title}
@@ -50,6 +76,7 @@ export default function CreateProductPage() {
         />
 
         <input
+          type="number"
           placeholder="Price"
           className="border p-2 rounded"
           value={price}
@@ -57,6 +84,7 @@ export default function CreateProductPage() {
         />
 
         <input
+          type="text"
           placeholder="Image URL"
           className="border p-2 rounded"
           value={image}
@@ -69,6 +97,10 @@ export default function CreateProductPage() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        {error && (
+          <p className="text-red-500 text-sm">{error}</p>
+        )}
 
         <button className="bg-blue-600 text-white p-3 rounded-lg">
           Create Product

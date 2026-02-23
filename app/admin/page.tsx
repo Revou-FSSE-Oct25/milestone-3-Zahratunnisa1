@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DeleteButton from "../components/DeleteButton";
+import DeleteButton from "components/DeleteButton";
 
 type Product = {
   id: number;
@@ -10,7 +10,7 @@ type Product = {
 
 async function getProducts(): Promise<Product[]> {
   const res = await fetch("https://api.escuelajs.co/api/v1/products", {
-    cache: "no-store",
+    cache: "no-store", // Admin harus selalu fresh data
   });
 
   if (!res.ok) {
@@ -53,12 +53,14 @@ export default async function AdminPage() {
             <tr key={p.id} className="text-center">
               <td className="border p-2">
                 <img
-                  src={p.images[0]}
+                  src={p.images?.[0]}
+                  alt={p.title}
                   className="w-16 h-16 object-cover mx-auto"
                 />
               </td>
 
               <td className="border p-2">{p.title}</td>
+
               <td className="border p-2">${p.price}</td>
 
               <td className="border p-2 flex gap-2 justify-center">
@@ -69,7 +71,7 @@ export default async function AdminPage() {
                   Edit
                 </Link>
 
-                {/* 🔥 Client Component */}
+                {/* Delete Button Client Component */}
                 <DeleteButton id={p.id} />
               </td>
             </tr>

@@ -1,18 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "./context/AuthContext";
-import { useCart } from "./context/CartContext";
+import { useSession, signOut } from "next-auth/react";
+import { useCart } from "context/CartContext";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-
+  const { data: session } = useSession();
   const { cart } = useCart();
 
-const totalItems = cart.reduce(
-  (acc, item) => acc + item.quantity,
-  0
-);
+  const totalItems = cart.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
 
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
@@ -28,24 +27,27 @@ const totalItems = cart.reduce(
           Products
         </Link>
 
-       <Link href="/cart" className="relative">
-      🛒 Cart
+        <Link href="/cart" className="relative">
+          🛒 Cart
 
-        {totalItems > 0 && (
-         <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-        {totalItems}
-        </span>
-        )}
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+              {totalItems}
+            </span>
+          )}
         </Link>
 
-        {user ? (
+        {session ? (
           <div className="flex items-center gap-4">
             <span className="text-gray-100">
-              Hello, <span className="font-semibold">{user.name}</span>
+              Hello,{" "}
+              <span className="font-semibold">
+                {session.user?.name}
+              </span>
             </span>
 
             <button
-              onClick={logout}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="bg-white text-purple-700 hover:bg-gray-200 px-4 py-2 rounded-md font-semibold transition"
             >
               Logout
@@ -63,4 +65,5 @@ const totalItems = cart.reduce(
     </nav>
   );
 }
+
 

@@ -1,9 +1,7 @@
 "use client";
 
-import { useCart } from "app/components/context/CartContext";
+import { useCart } from "context/CartContext";
 import { useRouter } from "next/navigation";
-const router = useRouter();
-
 
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart } = useCart();
