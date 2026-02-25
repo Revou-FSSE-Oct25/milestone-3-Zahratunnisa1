@@ -4,13 +4,14 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   id: number;
+  title: string;
 };
 
-export default function DeleteButton({ id }: Props) {
+export default function DeleteButton({ id, title }: Props) {
   const router = useRouter();
 
   const handleDelete = async () => {
-    const confirmDelete = confirm("Yakin mau hapus produk ini?");
+    const confirmDelete = confirm(`Yakin mau hapus produk ini "${title}"?`);
     if (!confirmDelete) return;
 
     try {

@@ -72,7 +72,7 @@ export default async function AdminPage() {
                 </Link>
 
                 {/* Delete Button Client Component */}
-                <DeleteButton id={p.id} />
+                <DeleteButton id={p.id}  title={p.title} />
               </td>
             </tr>
           ))}
