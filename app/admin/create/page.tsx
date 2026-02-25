@@ -39,7 +39,7 @@ export default function CreateProductPage() {
 
     setError("");
 
-    const res = await fetch("/api/admin/products", {
+    const res = await fetch("https://api.escuelajs.co/api/v1/products", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
